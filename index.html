@@ -396,7 +396,7 @@ body::before{
     </ul>
 
     <div class="help-note">
-      All key actions are logged in the Event Log on the right, so you can review every change if there is a protest or query.[web:176]
+      All key actions are logged in the Event Log on the right, so you can review every change if there is a protest or query.[web:24]
       <br><br>
       <strong>Made by Dev – JPK </strong>
     </div>
@@ -421,7 +421,7 @@ body::before{
       <button class="ref-preset-btn" onclick="setRefPreset(180)">3:00</button>
     </div>
     <div class="ref-timer-note">
-      Use when the referee grants time (injury, equipment, 10‑second count, etc.).[web:59][web:61]
+      Use when the referee grants time (injury, equipment, 10‑second count, etc.).[web:24]
     </div>
     <button class="close-help-btn" style="margin-top:12px" onclick="toggleRefModal()">Close</button>
   </div>
@@ -434,7 +434,7 @@ body::before{
         <h1>KUMITE MAIN SCOREBOARD</h1>
         <div class="subtitle"> JPK Academy • ATKS </div>
       </div>
-      <div class="header-badge">Scoreboard Advanced</div>
+      <div class="header-badge">Scoreboard Advanced BuildV1.2</div>
     </div>
 
     <div class="competitors">
@@ -459,6 +459,7 @@ body::before{
             <div class="penalty-item"><div class="penalty-label">H</div><span class="penalty-dot" onclick="toggleHansoku('ao')"></span></div>
           </div>
           <button class="kiken-btn" onclick="kikenWin('aka')">AO KIKEN</button>
+          <button class="kiken-btn" onclick="shikkakuWin('aka')">AO SHIKKAKU</button>
         </div>
       </div>
 
@@ -483,6 +484,7 @@ body::before{
             <div class="penalty-item"><div class="penalty-label">H</div><span class="penalty-dot" onclick="toggleHansoku('aka')"></span></div>
           </div>
           <button class="kiken-btn" onclick="kikenWin('ao')">AKA KIKEN</button>
+          <button class="kiken-btn" onclick="shikkakuWin('ao')">AKA SHIKKAKU</button>
         </div>
       </div>
     </div>
@@ -620,7 +622,7 @@ function sendStateToPresenter(){
     isRunning,
     banner: collectBannerState()
   };
-  presenterWin.postMessage(msg,'*'); // same origin context.[web:174]
+  presenterWin.postMessage(msg,'*');
 }
 
 /* Help modal */
@@ -800,7 +802,7 @@ function toggleSpecificPenalty(c,index){
   updatePenaltiesUI();
 }
 
-/* Hansoku & kiken */
+/* Hansoku & kiken & shikkaku */
 function toggleHansoku(c){
   const index=4;
   penaltyStates[c][index]=!penaltyStates[c][index];
@@ -826,6 +828,15 @@ function kikenWin(winner){
   pauseTimer();
   logAction('Win by kiken for '+winner.toUpperCase());
   showWinner("KIKEN");
+}
+function shikkakuWin(winner){
+  if(!confirm("Confirm SHIKKAKU (disqualification) win for "+winner.toUpperCase()+"?"))return;
+  scores.aka=0;scores.ao=0;
+  scores[winner]=8;
+  updateDisplay();
+  pauseTimer();
+  logAction('Win by shikkaku for '+winner.toUpperCase());
+  showWinner("SHIKKAKU");
 }
 
 /* UI update */
@@ -906,6 +917,7 @@ function showWinner(reason=null,forcedWinner=null){
     else if(mode==="SENSHU")titleEl.textContent="WINNER (BY SENSHU)";
     else if(mode==="HANSOKU")titleEl.textContent="WINNER (HANSOKU)";
     else if(mode==="KIKEN")titleEl.textContent="WINNER (BY KIKEN)";
+    else if(mode==="SHIKKAKU")titleEl.textContent="WINNER (SHIKKAKU)";
     else if(mode==="GAP")titleEl.textContent="WINNER";
     else titleEl.textContent="WINNER";
 
